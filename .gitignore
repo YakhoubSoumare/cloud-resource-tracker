@@ -24,3 +24,4 @@ node_modules/ # Installed packages
 
 # Cache files and folders
 .cache/       # General cache directory
+*.swp
