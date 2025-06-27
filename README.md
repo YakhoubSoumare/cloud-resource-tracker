@@ -1,14 +1,22 @@
 # Cloud Resource Tracker
-Track and log AWS resource usage using shell scripts and AWS CLI.  
+Track and log AWS resource usage (AWS and Azure) using shell scripts and AWS CLI.  
 Intended for automation and scheduled reporting via cron.
 
 ## Description
 
-This script collects information on:
+These scripts collect information on:
+
+### AWS
 - EC2 instances
 - S3 buckets
 - Lambda functions
 - IAM users
+
+### Azure
+- Virtual Machines
+- Storage Accounts
+- Function Apps
+- Azure AD users
 
 It’s designed to be run automatically (e.g., daily) using `crontab` and saves the output to a log file for review.
 
@@ -17,26 +25,39 @@ It’s designed to be run automatically (e.g., daily) using `crontab` and saves 
 cloud-resource-tracker/
 ├── aws/
 │ ├── aws_resource_report.sh
-│ └── aws_report.log (ignored)
+│ 
+├── azure/
+│ ├── azure_resource_report.sh
+|
+├── docs/
+│ ├── aws_resources.md
+│ └── azure_resources.md
 ├── .gitignore
 └── README.md
 
 ## Requirements
 
+**For AWS:**
 - AWS CLI installed and configured  
 - IAM permissions to list EC2, S3, Lambda, IAM  
 - `jq` installed for parsing JSON (optional but recommended)
+
+**For Azure:**
+- Azure CLI installed and logged in (`az login`)  
+- Permissions to list VM, Storage, Function Apps, and AD users
 
 ## Usage
 
 1. Make the script executable:
 ```bash
    chmod +x aws_resource_report.sh
+   chmod +x azure_resource_report.sh
 ```
 
 Run manually:
 ```bash
     ./aws_resource_report.sh
+    ./azure_resource_report.sh
 ```
 
 Or schedule with crontab:
@@ -47,16 +68,16 @@ Or schedule with crontab:
 Add this line:
 
 ```bash
-    0 8 * * * /full/path/aws_resource_report.sh >> /full/path/aws_report.log 2>&1
+    0 6 * * * /full/path/to/cloud-resource-tracker/aws/aws_resource_report.sh >> /full/path/to/aws_report.log 2>&1
+    0 6 * * * /full/path/to/cloud-resource-tracker/azure/azure_resource_report.sh >> /full/path/to/azure_report.log 2>&1
 ```
 
 ## Version
-v1.0.0 — AWS tracking script and cron setup
-Planned: v1.1.0 with Azure/GCP support
+v1.2.0 — AWS and Azure tracking scripts and cron setup
 
 ## Future Improvements
-- Extend support to Azure and GCP
-- Organize cloud-specific scripts into separate directories
-- Combine results into one unified report
-- Add logging and optional delivery (email or S3 upload)
-- Support argument flags for manual/custom runs
+- Add GCP support
+- Combine AWS and Azure reports
+- Add logging options and output delivery
+- Parameterize regions and services
+- Add support for email or blob/S3 export
