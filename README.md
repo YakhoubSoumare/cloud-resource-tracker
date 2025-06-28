@@ -25,20 +25,20 @@ Scripts are designed for scheduled daily execution using `crontab`, logging resu
 
 ## Project Structure
 
+
 cloud-resource-tracker/  
 ├── aws/  
 │   └── aws_resource_report.sh  
 ├── azure/  
 │   └── azure_resource_report.sh  
 ├── github/  
-│   ├── github_collaborators.sh   
+│   └── github_collaborators.sh  
 ├── docs/  
 │   ├── aws_resources.md  
 │   ├── azure_resources.md  
 │   └── github-collaborators.md  
 ├── .gitignore  
-├── .env (not committed) 
-└── README.md  
+└── README.md    
 
 ## Requirements
 
