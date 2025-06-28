@@ -1,27 +1,29 @@
 # PEM keys and sensitive files
-*.pem         # Privacy Enhanced Mail keys
-*.key         # Private key files
+*.pem
+*.key
 
-# Environment and log/temp/retry files
-*.env         # Environment variable definitions
-*.log        # Log files
-*.tmp         # Temporary files
-*.retry       # Retry files for failed jobs
+# Environment configuration
+.env
+
+# Log, temp, and retry files
+#*.log
+*.tmp
+*.retry
 
 # Editor and OS-specific files
-*.swp         # Swap files (e.g., from Vim)
-.DS_Store     # macOS directory metadata
-.vscode/      # Visual Studio Code settings
-.idea/        # JetBrains IDE project settings
-*.bash_history # Bash shell history
+*.swp
+.DS_Store
+.vscode/
+.idea/
+*.bash_history
 
 # Python cache and build files
-__pycache__/  # Python bytecode cache
-*.py[cod]     # Compiled Python files
+__pycache__/
+*.py[cod]
 
 # Node.js modules
-node_modules/ # Installed packages
+node_modules/
 
-# Cache files and folders
-.cache/       # General cache directory
-*.swp
+# Cache folders
+.cache/
+
