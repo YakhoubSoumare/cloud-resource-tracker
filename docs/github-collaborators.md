@@ -10,8 +10,9 @@ https://docs.github.com/en/rest/collaborators/collaborators?apiVersion=2022-11-2
 
 The script expects two environment variables to be set:
 
-- `OWNER` — the organization or username
-- `REPO` — the name of the repository
+- `REPO_OWNER` — the organization or username
+- `REPO_NAME` — the name of the repository
+- `GITHUB_TOKEN` — a GitHub personal access token
 
 If these are not set, the script will exit with an error.
 
@@ -20,26 +21,9 @@ If these are not set, the script will exit with an error.
 It is possible to export the variables directly in the terminal:
 
 ```bash
-    export OWNER=the-org
-    export REPO=the-repo
-```
-
-Alternatively, save them in a local file and source it:
-
-```bash
-    # ~/.env
-    export OWNER=the-org
-    export REPO=the-repo
+    export REPO_OWNER=the-org
+    export REPO_NAME=the-repo
     export GITHUB_TOKEN=ghp_...
-
-    # Load it in the terminal
-    source ~/.github_env
-```
-
-To clear the values when done:
-
-```bash
-    unset OWNER REPO GITHUB_TOKEN
 ```
 
 ## Authentication
