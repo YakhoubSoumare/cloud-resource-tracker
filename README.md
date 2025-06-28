@@ -68,7 +68,7 @@ cloud-resource-tracker/
 ```bash
     ./aws_resource_report.sh
     ./azure_resource_report.sh
-    ./github_collaborators.sh <org-name> <token>
+    ./github_collaborators.sh
 ```
 
 3. Or schedule with crontab:
