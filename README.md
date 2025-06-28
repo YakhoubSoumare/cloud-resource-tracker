@@ -1,5 +1,5 @@
 # Cloud Resource Tracker
-Track and log AWS resource usage (AWS and Azure) using shell scripts and AWS CLI.  
+Track and log AWS, Azure, and GitHub resource usage using shell scripts and CLI tools.  
 Intended for automation and scheduled reporting via cron.
 
 ## Description
@@ -18,66 +18,71 @@ These scripts collect information on:
 - Function Apps
 - Azure AD users
 
-It’s designed to be run automatically (e.g., daily) using `crontab` and saves the output to a log file for review.
+### GitHub
+- Lists users with access to a specific repository (via API)
+
+Scripts are designed for scheduled daily execution using `crontab`, logging results to files.
 
 ## Project Structure
 
-cloud-resource-tracker/
-├── aws/
-│ ├── aws_resource_report.sh
-│ 
-├── azure/
-│ ├── azure_resource_report.sh
-|
-├── docs/
-│ ├── aws_resources.md
-│ └── azure_resources.md
-├── .gitignore
-└── README.md
+cloud-resource-tracker/  
+├── aws/  
+│   └── aws_resource_report.sh  
+├── azure/  
+│   └── azure_resource_report.sh  
+├── github/  
+│   ├── github_collaborators.sh   
+├── docs/  
+│   ├── aws_resources.md  
+│   ├── azure_resources.md  
+│   └── github-collaborators.md  
+├── .gitignore  
+├── .env (not committed) 
+└── README.md  
 
 ## Requirements
 
-**For AWS:**
+**AWS:**
 - AWS CLI installed and configured  
-- IAM permissions to list EC2, S3, Lambda, IAM  
-- `jq` installed for parsing JSON (optional but recommended)
+- IAM permissions for EC2, S3, Lambda, IAM  
+- `jq` for JSON parsing (optional)
 
-**For Azure:**
-- Azure CLI installed and logged in (`az login`)  
-- Permissions to list VM, Storage, Function Apps, and AD users
+**Azure:**
+- Azure CLI installed and authenticated (`az login`)  
+- Access rights to list VMs, storage, functions, and users
+
+**GitHub:**
+- GitHub personal access token (PAT) with repo access
+- Environment variables: `REPO_OWNER`, `REPO_NAME`, `GITHUB_TOKEN`
 
 ## Usage
 
-1. Make the script executable:
+1. Make scripts executable:
 ```bash
-   chmod +x aws_resource_report.sh
-   chmod +x azure_resource_report.sh
+    chmod +x aws_resource_report.sh
+    chmod +x azure_resource_report.sh
+    chmod +x github_collaborators.sh
 ```
 
-Run manually:
+2. Run manually:
 ```bash
     ./aws_resource_report.sh
     ./azure_resource_report.sh
+    ./github_collaborators.sh <org-name> <token>
 ```
 
-Or schedule with crontab:
+3. Or schedule with crontab:
 ```bash
     crontab -e
 ```
 
-Add this line:
-
+Add entries:
 ```bash
-    0 6 * * * /full/path/to/cloud-resource-tracker/aws/aws_resource_report.sh >> /full/path/to/aws_report.log 2>&1
-    0 6 * * * /full/path/to/cloud-resource-tracker/azure/azure_resource_report.sh >> /full/path/to/azure_report.log 2>&1
+0 6 * * * /full/path/to/aws_resource_report.sh >> /full/path/to/aws_report.log 2>&1
+0 6 * * * /full/path/to/azure_resource_report.sh >> /full/path/to/azure_report.log 2>&1
+0 6 * * * /full/path/to/github_collaborators.sh >> /full/path/to/github_report.log 2>&1
 ```
 
 ## Version
-v1.2.0 — AWS and Azure tracking scripts and cron setup
+v1.0.3 — Added GitHub collaborators tracking and updated README
 
-## Future Improvements
-- Add GCP support
-- Combine AWS and Azure reports
-- Add logging options and output delivery
-- Parameterize regions and services
-- Add support for email or blob/S3 export
