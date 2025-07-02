@@ -1,9 +1,9 @@
 # Cloud Resource Tracker
 Track and log AWS, Azure, and GitHub resource usage using shell scripts and CLI tools.  
 Intended for automation and scheduled reporting via cron.
+Now includes Ansible-based setup for automated provisioning and script deployment.
 
 ## Description
-
 These scripts collect information on:
 
 ### AWS
@@ -22,11 +22,13 @@ These scripts collect information on:
 - Lists users with access to a specific repository (via API)
 
 Scripts are designed for scheduled daily execution using `crontab`, logging results to files.
+Provisioning of dependencies and repo setup is automated using Ansible.
 
 ## Project Structure
-
-
 cloud-resource-tracker/  
+├── ansible/  
+│   ├── inventory.ini  
+│   └── setup.yml  
 ├── aws/  
 │   └── aws_resource_report.sh  
 ├── azure/  
@@ -50,6 +52,7 @@ cloud-resource-tracker/
 **Azure:**
 - Azure CLI installed and authenticated (`az login`)  
 - Access rights to list VMs, storage, functions, and users
+- `jq` installed
 
 **GitHub:**
 - GitHub personal access token (PAT) with repo access
@@ -83,6 +86,17 @@ Add entries:
 0 6 * * * /full/path/to/github_collaborators.sh >> /full/path/to/github_report.log 2>&1
 ```
 
+## Ansible-based setup:
+Run this to install required tools and clone the project repo on EC2, Azure VM, and WSL:
+```bash
+ansible-playbook -i ansible/inventory.ini ansible/setup.yml
+```
+
+**This will:**
+- Install Git, jq, and Azure/AWS CLI where needed
+- Clone the project repo
+- Set up required environment on all target servers
+
 ## Version
-v1.0.3 — Added GitHub collaborators tracking and updated README
+v1.0.4 — Added GitHub collaborators tracking and updated README
 
