@@ -1,0 +1,12 @@
+---
+- name: Setup AWS Resource Tracker
+  hosts: ec2                        # Target group defined in inventory.ini
+  become: yes                       # Run tasks with sudo/root privileges
+  tasks:
+    - name: Download and install AWS CLI (v2)
+      shell: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip -o awscliv2.zip
+        sudo ./aws/install
+      args:
+        creates: /usr/local/bin/aws   # Skip if AWS CLI is already installed at this path
