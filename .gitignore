@@ -27,3 +27,5 @@ node_modules/
 # Cache folders
 .cache/
 
+# Vars
+**/vars*
