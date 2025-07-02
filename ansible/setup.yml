@@ -16,3 +16,21 @@
       package:
         name: jq
         state: present
+
+    - name: Install Git
+      package:
+        name: git
+        state: present
+
+    - name: Create Project Directory
+      file:
+        path: ~/cloud-resource-tracker
+        state: directory
+
+    - name: Clone repo into existing folder using HTTPS
+      shell: |
+        cd ~/cloud-resource-tracker
+        git clone https://github.com/YakhoubSoumare/cloud-resource-tracker.git .
+      args:
+        creates: ~/cloud-resource-tracker/.git    # Skip if .git already exists
+
