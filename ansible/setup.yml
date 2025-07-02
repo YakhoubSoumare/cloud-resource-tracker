@@ -1,0 +1,59 @@
+---
+
+# === Common steps for all trackers ===
+
+- name: Clone project repo to all trackers
+  hosts: trackers
+  become: yes
+  tasks:
+
+    - name: Install Git
+      package:
+        name: git
+        state: present
+
+    - name: Install jq (Json Parser)
+      package:
+        name: jq
+        state: present
+
+    - name: Create project directory
+      file:
+        path: ~/cloud-resource-tracker
+        state: directory
+
+    - name: Clone repo into folder using HTTPS
+      shell: |
+        cd ~/cloud-resource-tracker
+        git clone https://github.com/YakhoubSoumare/cloud-resource-tracker.git .
+      args:
+        creates: ~/cloud-resource-tracker/.git    # Skip if .git already exists
+
+# === "EC2-specific installation" ===
+
+- name: Setup AWS Resource Tracker
+  hosts: ec2                        # Target group defined in inventory.ini
+  become: yes                       # Run tasks with sudo/root privileges
+  tasks:
+    
+    - name: Download and install AWS CLI (v2)
+      shell: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip -o awscliv2.zip
+        sudo ./aws/install
+      args:
+        creates: /usr/local/bin/aws   # Skip if AWS CLI is already installed at this path
+
+# === "VM-specific installation" ===
+
+- name: Setup Azure VM Resource Tracker
+  hosts: vm                        
+  become: yes                      
+  tasks:
+
+    - name: Install Azure CLI
+      package:
+        name: azure-cli
+        state: present
+
+# === "WSL-specific installation" ===
