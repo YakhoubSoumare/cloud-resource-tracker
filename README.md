@@ -1,10 +1,14 @@
 # Cloud Resource Tracker
+
 Track and log AWS, Azure, and GitHub resource usage using shell scripts and CLI tools.  
-Intended for automation and scheduled reporting via cron.
-Now includes Ansible-based setup for automated provisioning and script deployment.
+Now includes Ansible-based automation for provisioning and deployment.  
+Supports scheduled reporting via `cron`.
+
+---
 
 ## Description
-These scripts collect information on:
+
+Collects and logs metadata for:
 
 ### AWS
 - EC2 instances
@@ -19,84 +23,122 @@ These scripts collect information on:
 - Azure AD users
 
 ### GitHub
-- Lists users with access to a specific repository (via API)
+- Repository collaborators (via API)
 
-Scripts are designed for scheduled daily execution using `crontab`, logging results to files.
-Provisioning of dependencies and repo setup is automated using Ansible.
+Each script is designed for daily execution and logs output to files.  
+Dependencies and repo setup are automated using Ansible.
+
+---
 
 ## Project Structure
-cloud-resource-tracker/  
-├── ansible/  
-│   ├── inventory.ini  
-│   └── setup.yml  
-├── aws/  
-│   └── aws_resource_report.sh  
-├── azure/  
-│   └── azure_resource_report.sh  
-├── github/  
-│   └── github_collaborators.sh  
-├── docs/  
-│   ├── aws_resources.md  
-│   ├── azure_resources.md  
-│   └── github-collaborators.md  
-├── .gitignore  
-└── README.md    
+
+```
+cloud-resource-tracker/
+├── ansible/
+│   ├── inventory.ini
+│   ├── setup.yml
+│   ├── vars.yml
+│   └── roles/
+│       └── common/
+├── aws/
+│   └── aws_resource_report.sh
+├── azure/
+│   └── azure_resource_report.sh
+├── github/
+│   └── github_collaborators.sh
+├── docs/
+│   ├── aws_resources.md
+│   ├── azure_resources.md
+│   ├── github-collaborators.md
+│   └── ansible_setup.md
+├── .gitignore
+└── README.md
+```
+
+---
 
 ## Requirements
 
-**AWS:**
-- AWS CLI installed and configured  
-- IAM permissions for EC2, S3, Lambda, IAM  
-- `jq` for JSON parsing (optional)
-
-**Azure:**
-- Azure CLI installed and authenticated (`az login`)  
-- Access rights to list VMs, storage, functions, and users
+### AWS
+- AWS CLI configured
+- IAM permissions for EC2, S3, Lambda, IAM
 - `jq` installed
 
-**GitHub:**
-- GitHub personal access token (PAT) with repo access
-- Environment variables: `REPO_OWNER`, `REPO_NAME`, `GITHUB_TOKEN`
+### Azure
+- Azure CLI authenticated (`az login`)
+- Access to list VMs, storage, and AD users
+- `jq` installed
 
-## Usage
+### GitHub
+- Personal access token (PAT)
+- Environment variables:
+  - `REPO_OWNER`
+  - `REPO_NAME`
+  - `GITHUB_TOKEN`
 
-1. Make scripts executable:
+---
+
+## Manual Script Usage
+
+Make executable:
+
 ```bash
-    chmod +x aws_resource_report.sh
-    chmod +x azure_resource_report.sh
-    chmod +x github_collaborators.sh
+chmod +x aws/aws_resource_report.sh
+chmod +x azure/azure_resource_report.sh
+chmod +x github/github_collaborators.sh
 ```
 
-2. Run manually:
+Run:
+
 ```bash
-    ./aws_resource_report.sh
-    ./azure_resource_report.sh
-    ./github_collaborators.sh
+./aws/aws_resource_report.sh
+./azure/azure_resource_report.sh
+./github/github_collaborators.sh
 ```
 
-3. Or schedule with crontab:
+Schedule with cron:
+
 ```bash
-    crontab -e
+crontab -e
 ```
 
-Add entries:
+Example entries:
+
 ```bash
-0 6 * * * /full/path/to/aws_resource_report.sh >> /full/path/to/aws_report.log 2>&1
-0 6 * * * /full/path/to/azure_resource_report.sh >> /full/path/to/azure_report.log 2>&1
-0 6 * * * /full/path/to/github_collaborators.sh >> /full/path/to/github_report.log 2>&1
+0 6 * * * /full/path/aws_resource_report.sh >> /logs/aws.log 2>&1
+0 6 * * * /full/path/azure_resource_report.sh >> /logs/azure.log 2>&1
+0 6 * * * /full/path/github_collaborators.sh >> /logs/github.log 2>&1
 ```
 
-## Ansible-based setup:
-Run this to install required tools and clone the project repo on EC2, Azure VM, and WSL:
+---
+
+## Ansible-Based Setup
+
+To automatically install tools and clone the repo on EC2, Azure VM, and WSL:
+
 ```bash
 ansible-playbook -i ansible/inventory.ini ansible/setup.yml
 ```
 
-**This will:**
-- Install Git, jq, and Azure/AWS CLI where needed
-- Clone the project repo
-- Set up required environment on all target servers
+This will:
+- Install Git and jq
+- Install AWS CLI (on EC2) and Azure CLI (on VM)
+- Clone the project repository
+- Export GitHub environment variables (on WSL)
+
+Before running Ansible, create a `vars.yml` file in the `ansible/` folder with GitHub credentials:
+
+```yaml
+GITHUB_TOKEN: your_token_here
+REPO_OWNER: your_username
+REPO_NAME: your_repo
+```
+
+See `docs/ansible_setup.md` for more details.
+
+---
 
 ## Version
-v1.0.4 — Added GitHub collaborators tracking and updated README
+
+**v1.0.5** — Refactored setup with Ansible automation and documentation
 
