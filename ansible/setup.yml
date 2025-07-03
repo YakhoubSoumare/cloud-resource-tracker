@@ -1,39 +1,12 @@
 ---
 
-# === Common steps for all trackers ===
-
-- name: Clone project repo to all trackers
-  hosts: trackers
-  become: yes
-  tasks:
-
-    - name: Install Git
-      package:
-        name: git
-        state: present
-
-    - name: Install jq (Json Parser)
-      package:
-        name: jq
-        state: present
-
-    - name: Create project directory
-      file:
-        path: ~/cloud-resource-tracker
-        state: directory
-
-    - name: Clone repo into folder using HTTPS
-      shell: |
-        cd ~/cloud-resource-tracker
-        git clone https://github.com/YakhoubSoumare/cloud-resource-tracker.git .
-      args:
-        creates: ~/cloud-resource-tracker/.git    # Skip if .git already exists
-
 # === "EC2-specific installation" ===
 
 - name: Setup AWS Resource Tracker
   hosts: ec2                        # Target group defined in inventory.ini
   become: yes                       # Run tasks with sudo/root privileges
+  roles:
+    - common
   tasks:
     
     - name: Download and install AWS CLI (v2)
@@ -48,7 +21,9 @@
 
 - name: Setup Azure VM Resource Tracker
   hosts: vm                        
-  become: yes                      
+  become: yes
+  roles:
+    - common    
   tasks:
 
     - name: Install Azure CLI
@@ -57,3 +32,32 @@
         state: present
 
 # === "WSL-specific installation" ===
+
+- name: Setup GitHub Resource Tracker
+  hosts: wsl
+  become: false # Run as regular user to modify ~/.bashrc
+  vars_files:
+    - vars.yml # Path to secret file
+  roles:
+    - common
+  tasks:
+
+    # OBS! change to use of source and env when CI/CD
+
+    - name: Export GitHub Repo Owner
+      lineinfile: # Ensures the line exists in the file (adds or updates)
+        path: ~/.bashrc # Adds environment variable to user's bash profile
+        line: 'export REPO_OWNER={{ REPO_OWNER }}'
+        state: present # Creates the file if it doesn't already exist
+
+    - name: Export GitHub Repo Name
+      lineinfile:
+        path: ~/.bashrc
+        line: 'export REPO_NAME={{ REPO_NAME }}'
+        state: present
+
+    - name: Export GitHub Token
+      lineinfile:
+        path: ~/.bashrc
+        line: 'export GITHUB_TOKEN={{ GITHUB_TOKEN }}'
+        state: present
