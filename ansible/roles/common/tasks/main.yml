@@ -1,0 +1,28 @@
+---
+# tasks file for roles/common
+
+- name: Install Git
+  #become: yes
+  package:
+    name: git
+    state: present
+
+- name: Install jq
+  #become: yes
+  package:
+    name: jq
+    state: present
+
+- name: Create project directory
+  #become: yes
+  file:
+    path: ~/cloud-resource-tracker
+    state: directory
+
+- name: Clone repo
+  #  become: yes
+  shell: |
+    cd ~/cloud-resource-tracker
+    git clone https://github.com/YakhoubSoumare/cloud-resource-tracker.git .
+  args:
+    creates: ~/cloud-resource-tracker/.git
